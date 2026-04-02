@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "can.h"
+#include "f2p.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +52,10 @@ FDCAN_HandleTypeDef hfdcan1;
 uint8_t Msg_1[7] = {0};
 uint8_t Msg_2[7] = {0};
 
+#define DMA_CH1 6
+#define DMA_CH2 2
+
+uint16_t DICCDMA[DMA_CH1 + DMA_CH2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,19 +108,28 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)DICCDMA, DMA_CH1);
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t*)DICCDMA, DMA_CH2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //while (CAN_Read(&DICCP)){} Encara no està marge amb el f2p
+		DMA2DICCF();
+			  DIG2DICCF();
+			  DMA2DICCP();
+	  while (CAN_Read(&DICCP)){}
 
-	  //CAN_Msg_Maker(&DICCP, Msg_1, Msg_2); Encara no està marge amb el f2p
+	  CAN_Msg_Maker(&DICCP, Msg_1, Msg_2);
 
 	  CAN_Send(&hfdcan1, 0x100, Msg_1, 7);
 	  CAN_Send(&hfdcan1, 0x101, Msg_2, 7);
+
+	  DMA2DICCF();
+	  DIG2DICCF();
+	  DMA2DICCP();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "f2p.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -41,7 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define ADC1_CH 6 //Pot ser que hi hagin 2 canals de ADC per el DMA ja que cada ADC te les sebes entrades
+#define ADC2_CH 2
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -53,7 +54,39 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+//Unió de Array amb Struct, cada espai de la array es un punt de la struct (Ex: array[3] = RfSIGItempM)
+typedef union {
+    uint16_t array[ADC1_CH + ADC2_CH];
+    struct {
+    	uint16_t RfSIGOtempI;
+    	uint16_t RfSIGItempI;
+    	uint16_t RfSIGOtempM;
+    	uint16_t RfSIGItempM;
+    	uint16_t RfSIGLsus;
+    	uint16_t RfSIGRsus;
+    	uint16_t RSIGlvs;
+    	uint16_t RfSHU;
+    };
+} DICCF_t;
 
+typedef struct {
+	//Analog
+	uint16_t RpSIGOtempI;
+	uint16_t RpSIGItempI;
+	uint16_t RpSIGOtempM;
+	uint16_t RpSIGItempM;
+	uint16_t RpSIGLsus;
+	uint16_t RpSIGRsus;
+	uint16_t RSIGlvs;
+	uint16_t RpSHU;
+	//Digital
+	uint8_t RpSDChvd;
+	uint8_t RpSDCtsms;
+	uint8_t RpSDClsdb;
+	uint8_t RpSDCrsdb;
+} DICCP_t;
+
+extern DICCP_t DICCP;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
