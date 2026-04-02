@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "can.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +48,8 @@ DMA_HandleTypeDef hdma_adc2;
 FDCAN_HandleTypeDef hfdcan1;
 
 /* USER CODE BEGIN PV */
+uint8_t Msg_1[7] = {0};
+uint8_t Msg_2[7] = {0};
 
 /* USER CODE END PV */
 
@@ -108,6 +110,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //while (CAN_Read(&DICCP)){} Encara no està marge amb el f2p
+
+	  //CAN_Msg_Maker(&DICCP, Msg_1, Msg_2); Encara no està marge amb el f2p
+
+	  CAN_Send(&hfdcan1, 0x100, Msg_1, 7);
+	  CAN_Send(&hfdcan1, 0x101, Msg_2, 7);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
