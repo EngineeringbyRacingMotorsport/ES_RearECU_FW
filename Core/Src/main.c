@@ -117,19 +117,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		DMA2DICCF();
-			  DIG2DICCF();
-			  DMA2DICCP();
+	  DMA2DICCF();
+	  DIG2DICCF();
+	  DMA2DICCP();
 	  while (CAN_Read(&DICCP)){}
 
 	  CAN_Msg_Maker(&DICCP, Msg_1, Msg_2);
 
 	  CAN_Send(&hfdcan1, 0x100, Msg_1, 7);
 	  CAN_Send(&hfdcan1, 0x101, Msg_2, 7);
-
-	  DMA2DICCF();
-	  DIG2DICCF();
-	  DMA2DICCP();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

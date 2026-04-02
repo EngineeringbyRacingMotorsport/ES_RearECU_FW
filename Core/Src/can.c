@@ -4,7 +4,7 @@
  *  Created on: Apr 2, 2026
  *      Author: oriol
  */
-#include <CAN.h>
+#include <can.h>
 
 // Variables privades del buffer circular
 static CAN_Msg rxBuffer[CAN_RX_BUF_SIZE];
