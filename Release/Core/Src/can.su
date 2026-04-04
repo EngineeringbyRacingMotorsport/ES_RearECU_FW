@@ -1,0 +1,5 @@
+../Core/Src/can.c:15:6:CAN_Init_Custom	32	static
+../Core/Src/can.c:36:6:HAL_FDCAN_RxFifo0Callback	16	static
+../Core/Src/can.c:48:19:CAN_Send	48	static
+../Core/Src/can.c:63:6:CAN_Msg_Maker	16	static
+../Core/Src/can.c:105:9:CAN_Read	12	static

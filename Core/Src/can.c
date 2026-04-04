@@ -11,6 +11,7 @@ static CAN_Msg rxBuffer[CAN_RX_BUF_SIZE];
 static volatile int rxHead = 0;
 static volatile int rxTail = 0;
 
+
 // Inicialització completa: Filtres + Notificacions + Start
 void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan) {
     FDCAN_FilterTypeDef sFilterConfig;
@@ -60,7 +61,7 @@ HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *da
     return HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &txHeader, data);
 }
 
-void CAN_Msg_Maker(SIGNAL_dicc *DICCP, uint8_t *Msg1, uint8_t *Msg2)
+void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2)
 {
 	for (int i = 0; i < 7; i++) {
         Msg1[i] = 0;
@@ -68,41 +69,36 @@ void CAN_Msg_Maker(SIGNAL_dicc *DICCP, uint8_t *Msg1, uint8_t *Msg2)
     }
 
 	/* ================ MISSATGE 1 ================ */
-	Msg1[0] |= (DICCP->FpANLRpot   & 0xFF);
-	Msg1[1] |= (DICCP->FpANLLpot   & 0xFF);
-	Msg1[2] |= (DICCP->FpANLRsus   & 0xFF);
-	Msg1[3] |= (DICCP->FpANLLsus   & 0xFF);
-	Msg1[4] |= (DICCP->FpANLRspeed & 0xFF);
-	Msg1[5] |= (DICCP->FpANLLspeed & 0xFF);
-	Msg1[6] |= (DICCP->FpANLbrake  & 0xFF);
+	Msg1[0] |= (DICCP->RpSIGRsus & 0xFF);
+	Msg1[1] |= (DICCP->RpSIGLsus & 0xFF);
+	Msg1[2] |= (DICCP->RpSIGRspeed & 0xFF);
+	Msg1[3] |= (DICCP->RpSIGLspeed & 0xFF);
+	Msg1[4] |= (DICCP->RpSIGOtempM & 0xFF);
+	Msg1[5] |= (DICCP->RpSIGItempM & 0xFF);
+	Msg1[6] |= (DICCP->RpSIGItempI & 0xFF);
+	Msg1[7] |= (DICCP->RpSIGOtempI & 0xFF);
 
 	/* ================ MISSATGE 2 ================ */
-	Msg2[0] |= ((DICCP->FpINTbmseled & 0x01) << 0);
-	Msg2[0] |= ((DICCP->FpINTimdeled & 0x01) << 1);
-	Msg2[0] |= ((DICCP->FpINTtsoff   & 0x01) << 2);
-	Msg2[0] |= ((DICCP->FpINTbmssled & 0x01) << 3);
-	Msg2[0] |= ((DICCP->FpINTbutpre  & 0x01) << 4);
-	Msg2[0] |= ((DICCP->FpINTbutr2d  & 0x01) << 5);
-	Msg2[0] |= ((DICCP->FpINTbutmenu & 0x01) << 6);
-	Msg2[0] |= ((DICCP->FpDITmicrosd & 0x01) << 7);
+	Msg2[0] |= ((DICCP->RpSDChvd & 0x01) << 0);
+	Msg2[0] |= ((DICCP->RpSDCtsms & 0x01) << 1);
+	Msg2[0] |= ((DICCP->RpSDCrsdb & 0x01) << 2);
+	Msg2[0] |= ((DICCP->RpSDClsdb & 0x01) << 3);
 
-	Msg2[1] |= ((DICCP->FpSDCinertia & 0x01) << 0);
-	Msg2[1] |= ((DICCP->FpSDCbots    & 0x01) << 1);
-	Msg2[1] |= ((DICCP->FpSDCcsdb    & 0x01) << 2);
-	Msg2[1] |= ((DICCP->FpERRapps    & 0x01) << 3);
-	Msg2[1] |= ((DICCP->FpDIGrefri   & 0x03) << 4);
-	Msg2[1] |= ((DICCP->FpDIGr2d     & 0x01) << 6);
+	Msg2[1] |= ((DICCP->RpSTAbrkledR & 0x01) << 0);
+	Msg2[1] |= ((DICCP->RpSTAbrkledG & 0x01) << 1);
+	Msg2[1] |= ((DICCP->RpSTAbrkledB & 0x01) << 2);
+	Msg2[1] |= ((DICCP->RpSTArefriaccu & 0x01) << 3);
+	Msg2[1] |= ((DICCP->RpSTArefrimot & 0x01) << 4);
+	Msg2[1] |= ((DICCP->RpSTArefriinv & 0x01) << 6);
 
-	Msg2[2] |= ((DICCP->FpANLspeed   & 0xFF) << 0);
-	Msg2[3] |= ((DICCP->FpANLtempaccu & 0xFF) << 0);
-	Msg2[4] |= ((DICCP->FpANLVaccu    & 0xFF) << 0);
+	Msg2[2] |= ((DICCP->RSIGlvs & 0x00FF) << 0);
+	Msg2[3] |= ((DICCP->RSIGlvs & 0xFF00) >> 8);
 
-	/* 16 bits little endian */
-	Msg2[5] |= ((DICCP->FpSHU & 0x00FF) << 0);
-	Msg2[6] |= ((DICCP->FpSHU & 0xFF00) >> 8);
+	Msg2[4] |= ((DICCP->RpSHU & 0x00FF) << 0);
+	Msg2[5] |= ((DICCP->RpSHU & 0xFF00) >> 8);
 }
-
-uint8_t CAN_Read(SIGNAL_dicc *DICCP)
+/*
+uint8_t CAN_Read(DICCP_t *DICCP)
 {
     if (rxHead == rxTail) {
         return 0; // No hi ha missatges
@@ -136,4 +132,4 @@ uint8_t CAN_Read(SIGNAL_dicc *DICCP)
 
     return 1; // Missatge processat
 }
-
+*/

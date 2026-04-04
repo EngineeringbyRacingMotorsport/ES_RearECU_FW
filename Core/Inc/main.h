@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "f2p.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -69,6 +68,8 @@ typedef union {
     };
 } DICCF_t;
 
+extern DICCF_t DICCF;
+
 typedef struct {
 	//Analog
 	uint16_t RpSIGOtempI;
@@ -84,6 +85,15 @@ typedef struct {
 	uint8_t RpSDCtsms;
 	uint8_t RpSDClsdb;
 	uint8_t RpSDCrsdb;
+	uint8_t RpSTAbrkledR;
+	uint8_t RpSTAbrkledG;
+	uint8_t RpSTAbrkledB;
+	uint8_t RpSTArefriaccu;
+	uint8_t RpSTArefrimot;
+	uint8_t RpSTArefriinv;
+	//Encoder
+	uint16_t RpSIGRspeed;
+	uint16_t RpSIGLspeed;
 } DICCP_t;
 
 extern DICCP_t DICCP;
@@ -128,8 +138,8 @@ extern DICCP_t DICCP;
 #define RfSDCrsdb_GPIO_Port GPIOB
 #define RfSIGLspeed_Pin GPIO_PIN_4
 #define RfSIGLspeed_GPIO_Port GPIOB
-#define RfSIRGspeed_Pin GPIO_PIN_5
-#define RfSIRGspeed_GPIO_Port GPIOB
+#define RfSIGRspeed_Pin GPIO_PIN_5
+#define RfSIGRspeed_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
