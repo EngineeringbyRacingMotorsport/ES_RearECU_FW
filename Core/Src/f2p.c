@@ -22,7 +22,7 @@ void F2P_Process_Encoders(DICCP_t *DICCP, uint16_t current_L, uint16_t current_R
 	prev_L = current_L;
 	prev_R = current_R;
 
-	float factor = (3.14159 * /* Diametre del encoder ex: 20cm */0.2 * 3.6) / (/*Numero de forats del encoder*/1024 * 0.1);
+	float factor = (3.14159 * /* Diametre del encoder ex: 20cm */0.2 * 3.6) / (/*Numero de forats del encoder*/1024 * 0.1/*Temps de cada salt del TIM6 en segons*/);
 
 	DICCP->RpSIGLspeed = (uint16_t)(delta_L * factor);
 	DICCP->RpSIGRspeed = (uint16_t)(delta_R * factor);
