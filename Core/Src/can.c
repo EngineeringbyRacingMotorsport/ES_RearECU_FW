@@ -1,9 +1,3 @@
-/*
- * can.c
- *
- *  Created on: Apr 2, 2026
- *      Author: oriol
- */
 #include <can.h>
 
 // Variables privades del buffer circular
@@ -33,18 +27,6 @@ void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan) {
     if (HAL_FDCAN_Start(hfdcan) != HAL_OK) Error_Handler();
 }
 
-// Aquesta és la funció que crida el processador automàticament
-void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
-    if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != 0) {
-        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &rxBuffer[rxHead].header, rxBuffer[rxHead].data) == HAL_OK) {
-            int nextHead = (rxHead + 1) % CAN_RX_BUF_SIZE;
-            if (nextHead != rxTail) { // Si no està ple
-                rxHead = nextHead;
-            }
-        }
-    }
-}
-
 // Les teves funcions d'enviament i creació (CAN_Send, CAN_Msg_Maker...)
 HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *data, uint32_t len) {
     FDCAN_TxHeaderTypeDef txHeader;
@@ -61,16 +43,10 @@ HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *da
     return HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &txHeader, data);
 }
 
-void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2)
-{
-	for (int i = 0; i < 7; i++) {
-        Msg1[i] = 0;
-        Msg2[i] = 0;
-    }
-
+void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2){
 	/* ================ MISSATGE 1 ================ */
-	Msg1[0] |= (DICCP->RpSIGRsus & 0xFF);
-	Msg1[1] |= (DICCP->RpSIGLsus & 0xFF);
+	Msg1[0] |= (DICCP->RpSIGRsus   & 0xFF);
+	Msg1[1] |= (DICCP->RpSIGLsus   & 0xFF);
 	Msg1[2] |= (DICCP->RpSIGRspeed & 0xFF);
 	Msg1[3] |= (DICCP->RpSIGLspeed & 0xFF);
 	Msg1[4] |= (DICCP->RpSIGOtempM & 0xFF);
@@ -79,17 +55,17 @@ void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2)
 	Msg1[7] |= (DICCP->RpSIGOtempI & 0xFF);
 
 	/* ================ MISSATGE 2 ================ */
-	Msg2[0] |= ((DICCP->RpSDChvd & 0x01) << 0);
+	Msg2[0] |= ((DICCP->RpSDChvd  & 0x01) << 0);
 	Msg2[0] |= ((DICCP->RpSDCtsms & 0x01) << 1);
 	Msg2[0] |= ((DICCP->RpSDCrsdb & 0x01) << 2);
 	Msg2[0] |= ((DICCP->RpSDClsdb & 0x01) << 3);
 
-	Msg2[1] |= ((DICCP->RpSTAbrkledR & 0x01) << 0);
-	Msg2[1] |= ((DICCP->RpSTAbrkledG & 0x01) << 1);
-	Msg2[1] |= ((DICCP->RpSTAbrkledB & 0x01) << 2);
+	Msg2[1] |= ((DICCP->RpSTAbrkledR   & 0x01) << 0);
+	Msg2[1] |= ((DICCP->RpSTAbrkledG   & 0x01) << 1);
+	Msg2[1] |= ((DICCP->RpSTAbrkledB   & 0x01) << 2);
 	Msg2[1] |= ((DICCP->RpSTArefriaccu & 0x01) << 3);
-	Msg2[1] |= ((DICCP->RpSTArefrimot & 0x01) << 4);
-	Msg2[1] |= ((DICCP->RpSTArefriinv & 0x01) << 6);
+	Msg2[1] |= ((DICCP->RpSTArefrimot  & 0x01) << 4);
+	Msg2[1] |= ((DICCP->RpSTArefriinv  & 0x01) << 6);
 
 	Msg2[2] |= ((DICCP->RSIGlvs & 0x00FF) << 0);
 	Msg2[3] |= ((DICCP->RSIGlvs & 0xFF00) >> 8);
@@ -97,9 +73,8 @@ void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2)
 	Msg2[4] |= ((DICCP->RpSHU & 0x00FF) << 0);
 	Msg2[5] |= ((DICCP->RpSHU & 0xFF00) >> 8);
 }
-/*
-uint8_t CAN_Read(DICCP_t *DICCP)
-{
+
+uint8_t CAN_Read(DICCP_t *DICCP){
     if (rxHead == rxTail) {
         return 0; // No hi ha missatges
     }
@@ -114,8 +89,12 @@ uint8_t CAN_Read(DICCP_t *DICCP)
             // Byte 0: Booleans i estats
             DICCP->SpERRbms    = (data[0] >> 0) & 0x01;
             DICCP->SpERRimd    = (data[0] >> 1) & 0x01;
-            DICCP->SpDIGresbut = (data[0] >> 2) & 0x01;
-            DICCP->SpSDC       = (data[0] >> 3) & 0x01;
+            DICCP->SpLCHebms   = (data[0] >> 2) & 0x01;
+            DICCP->SpLCHeimd   = (data[0] >> 3) & 0x01;
+            DICCP->SpERRbms    = (data[0] >> 4) & 0x01;
+            DICCP->SpERRimd    = (data[0] >> 5) & 0x01;
+            DICCP->SpDIGresbut = (data[0] >> 6) & 0x01;
+            DICCP->SpSDC       = (data[0] >> 7) & 0x01;
 
             // SHU (segons el teu codi original)
             DICCP->SpSHU = ((uint16_t)data[2] | ((uint16_t)data[1] << 8)) / 10;
@@ -132,4 +111,3 @@ uint8_t CAN_Read(DICCP_t *DICCP)
 
     return 1; // Missatge processat
 }
-*/
