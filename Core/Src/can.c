@@ -43,7 +43,7 @@ HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *da
     return HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &txHeader, data);
 }
 
-void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2){
+void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2, uint8_t *MsgInv){
 	/* ================ MISSATGE 1 ================ */
 	Msg1[0] |= (DICCP->RpSIGRsus   & 0xFF);
 	Msg1[1] |= (DICCP->RpSIGLsus   & 0xFF);
@@ -72,6 +72,13 @@ void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2){
 
 	Msg2[4] |= ((DICCP->RpSHU & 0x00FF) << 0);
 	Msg2[5] |= ((DICCP->RpSHU & 0xFF00) >> 8);
+
+	/* ================ MISSATGE INVERTER ================ */
+	MsgInv[0] |= (DICCP->REGID & 0xFF);
+
+	MsgInv[1] |= ((DICCP->INVdata & 0x00FF) << 0);
+	MsgInv[2] |= ((DICCP->INVdata & 0xFF00) >> 8);
+
 }
 
 uint8_t CAN_Read(DICCP_t *DICCP){
@@ -84,20 +91,13 @@ uint8_t CAN_Read(DICCP_t *DICCP){
 
     switch (rxMsg->header.Identifier)
     {
-        case 0x120: // ID del Missatge 2
+        case 0x120: // MISSATGE DE LA FRONT ECU
 
             // Byte 0: Booleans i estats
-            DICCP->SpERRbms    = (data[0] >> 0) & 0x01;
-            DICCP->SpERRimd    = (data[0] >> 1) & 0x01;
-            DICCP->SpLCHebms   = (data[0] >> 2) & 0x01;
-            DICCP->SpLCHeimd   = (data[0] >> 3) & 0x01;
-            DICCP->SpERRbms    = (data[0] >> 4) & 0x01;
-            DICCP->SpERRimd    = (data[0] >> 5) & 0x01;
-            DICCP->SpDIGresbut = (data[0] >> 6) & 0x01;
-            DICCP->SpSDC       = (data[0] >> 7) & 0x01;
+            DICCP->FpANLRpot   = data[0] & 0xFF;
+            DICCP->FpANLRpot   = data[1] & 0xFF;
 
-            // SHU (segons el teu codi original)
-            DICCP->SpSHU = ((uint16_t)data[2] | ((uint16_t)data[1] << 8)) / 10;
+            DICCP->FpDIGr2d    = (data[1] >> 6) & 0x01;
 
             break;
 

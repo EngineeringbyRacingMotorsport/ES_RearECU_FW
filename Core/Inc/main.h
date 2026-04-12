@@ -94,6 +94,14 @@ typedef struct {
 	//Encoder
 	uint16_t RpSIGRspeed;
 	uint16_t RpSIGLspeed;
+	//Inverter
+	uint8_t FpDIGr2d;
+	uint8_t DpSDC;
+	uint8_t FpANLRpot;
+	uint8_t FpANLLpot;
+	uint8_t REGID;
+	uint8_t INVdata;
+
 } DICCP_t;
 
 extern DICCP_t DICCP;

@@ -21,6 +21,6 @@ typedef struct {
 void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan);
 HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *data, uint32_t len);
 //uint8_t CAN_Read(DICCP_t *DICCP);
-void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2);
+void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2, uint8_t *MsgInv);
 
 #endif /* INC_CAN_H_ */

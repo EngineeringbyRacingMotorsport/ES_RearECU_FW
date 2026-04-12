@@ -64,6 +64,7 @@ uint16_t raw_pulses_R = 0;
 
 uint8_t Msg_1[7] = {0};
 uint8_t Msg_2[7] = {0};
+uint8_t Msg_Inv[3] = {0};
 
 #define DMA_CH1 6
 #define DMA_CH2 2
@@ -147,10 +148,11 @@ int main(void)
 	  DMA2DICCP(&DICCP);
 	  //while (CAN_Read(&DICCP)){}
 
-	  CAN_Msg_Maker(&DICCP, Msg_1, Msg_2);
+	  CAN_Msg_Maker(&DICCP, Msg_1, Msg_2, Msg_Inv);
 
 	  CAN_Send(&hfdcan1, 0x100, Msg_1, 7);
 	  CAN_Send(&hfdcan1, 0x101, Msg_2, 7);
+	  CAN_Send(&hfdcan1, 0x201, Msg_Inv, 3);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
