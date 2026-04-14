@@ -101,6 +101,16 @@ uint8_t CAN_Read(DICCP_t *DICCP){
 
             break;
 
+        case 0x120: // MISSATGE DE LA FRONT ECU
+
+                    // Byte 0: Booleans i estats
+			DICCP->FpANLRpot   = data[0] & 0xFF;
+			DICCP->FpANLRpot   = data[1] & 0xFF;
+
+			DICCP->FpDIGr2d    = (data[1] >> 6) & 0x01;
+
+			break;
+
         default:
             // ID desconeguda → no fem res
             break;
