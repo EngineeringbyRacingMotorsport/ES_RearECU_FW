@@ -1,6 +1,9 @@
 #include "p2f.h"
 #include "main.h"
 
+uint8_t DifTempInv = 20;
+uint8_t DifTempMot = 20;
+
 void INVERTER(DICCP_t *DICCP){
 	uint8_t switch_state = 0;
 	uint8_t SDC = DICCP->DpSDC;
@@ -61,5 +64,29 @@ void INVERTER(DICCP_t *DICCP){
 		DICCP->REGID   = 0x51;
 		DICCP->INVdata = 4;
 	}
+}
+
+void PLC(DICCP_t *DICCP)
+{
+	if(DifTempInv <= (DICCP->RpSIGOtempI - DICCP->RpSIGItempI))
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_SET); }
+	else
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_RESET); }
+
+	if(DifTempMot <= (DICCP->RpSIGOtempM - DICCP->RpSIGItempM))
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_SET); }
+	else
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_RESET); }
+	/*
+	if()
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_SET); }
+	else
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_RESET); }
+
+	if()
+	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledR_Pin, GPIO_PIN_SET); }
+	else
+	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledR_Pin, GPIO_PIN_RESET); }
+*/
 }
 

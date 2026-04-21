@@ -153,6 +153,9 @@ int main(void)
 	  CAN_Send(&hfdcan1, 0x100, Msg_1, 7);
 	  CAN_Send(&hfdcan1, 0x101, Msg_2, 7);
 	  CAN_Send(&hfdcan1, 0x201, Msg_Inv, 3);
+
+	  PLC(&DICCP);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
