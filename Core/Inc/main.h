@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -40,8 +41,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define ADC1_CH 6 //Pot ser que hi hagin 2 canals de ADC per el DMA ja que cada ADC te les sebes entrades
-#define ADC2_CH 2
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -53,32 +53,66 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-//Unió de Array amb Struct, cada espai de la array es un punt de la struct (Ex: array[3] = RfSIGItempM)
-typedef union {
-    uint16_t array[ADC1_CH + ADC2_CH];
-    struct {
-    	uint16_t RfSIGOtempI;
-    	uint16_t RfSIGItempI;
-    	uint16_t RfSIGOtempM;
-    	uint16_t RfSIGItempM;
-    	uint16_t RfSIGLsus;
-    	uint16_t RfSIGRsus;
-    	uint16_t RSIGlvs;
-    	uint16_t RfSHU;
-    };
+
+/* USER CODE END EFP */
+
+/* Private defines -----------------------------------------------------------*/
+#define RfSTArefriaccu_Pin GPIO_PIN_13
+#define RfSTArefriaccu_GPIO_Port GPIOC
+#define RfSTArefriinverter_Pin GPIO_PIN_14
+#define RfSTArefriinverter_GPIO_Port GPIOC
+#define RfSTArefrimot_Pin GPIO_PIN_15
+#define RfSTArefrimot_GPIO_Port GPIOC
+#define RfSTAbrkledR_Pin GPIO_PIN_4
+#define RfSTAbrkledR_GPIO_Port GPIOA
+#define RfSTAbrkledG_Pin GPIO_PIN_5
+#define RfSTAbrkledG_GPIO_Port GPIOA
+#define RfSTAbrkledB_Pin GPIO_PIN_6
+#define RfSTAbrkledB_GPIO_Port GPIOA
+#define RfSHU_Pin GPIO_PIN_7
+#define RfSHU_GPIO_Port GPIOA
+#define RfSIGlvs_Pin GPIO_PIN_2
+#define RfSIGlvs_GPIO_Port GPIOB
+#define RfSDChvd_Pin GPIO_PIN_11
+#define RfSDChvd_GPIO_Port GPIOB
+#define RfSDCtsms_Pin GPIO_PIN_12
+#define RfSDCtsms_GPIO_Port GPIOB
+#define RfSDClsdb_Pin GPIO_PIN_13
+#define RfSDClsdb_GPIO_Port GPIOB
+#define RfSDCrsdb_Pin GPIO_PIN_14
+#define RfSDCrsdb_GPIO_Port GPIOB
+
+/* USER CODE BEGIN Private defines */
+
+typedef struct {
+		//Analog
+		uint16_t RfSIGlvs;
+		uint16_t RfSHU;
+		//Digital
+		uint8_t RfSDChvd;
+		uint8_t RfSDCtsms;
+		uint8_t RfSDClsdb;
+		uint8_t RfSDCrsdb;
+		uint8_t RfSTAbrkledR;
+		uint8_t RfSTAbrkledG;
+		uint8_t RfSTAbrkledB;
+		uint8_t RfSTArefriaccu;
+		uint8_t RfSTArefrimot;
+		uint8_t RfSTArefriinverter;
+		//Inverter
+		uint8_t IfFDIGr2d;
+		uint8_t IfDSDC;
+		uint8_t IfFANLRpot;
+		uint8_t IfFANLLpot;
+		uint8_t IfREGID;
+		uint8_t IfINVdata;
 } DICCF_t;
 
 extern DICCF_t DICCF;
 
 typedef struct {
 	//Analog
-	uint16_t RpSIGOtempI;
-	uint16_t RpSIGItempI;
-	uint16_t RpSIGOtempM;
-	uint16_t RpSIGItempM;
-	uint16_t RpSIGLsus;
-	uint16_t RpSIGRsus;
-	uint16_t RSIGlvs;
+	uint16_t RpSIGlvs;
 	uint16_t RpSHU;
 	//Digital
 	uint8_t RpSDChvd;
@@ -90,66 +124,18 @@ typedef struct {
 	uint8_t RpSTAbrkledB;
 	uint8_t RpSTArefriaccu;
 	uint8_t RpSTArefrimot;
-	uint8_t RpSTArefriinv;
-	//Encoder
-	uint16_t RpSIGRspeed;
-	uint16_t RpSIGLspeed;
+	uint8_t RpSTArefriinverter;
 	//Inverter
-	uint8_t FpDIGr2d;
-	uint8_t DpSDC;
-	uint8_t FpANLRpot;
-	uint8_t FpANLLpot;
-	uint8_t REGID;
-	uint8_t INVdata;
+	uint8_t IpFDIGr2d;
+	uint8_t IpDSDC;
+	uint8_t IpFANLRpot;
+	uint8_t IpFANLLpot;
+	uint8_t IpREGID;
+	uint8_t IpINVdata;
 
 } DICCP_t;
 
 extern DICCP_t DICCP;
-/* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
-#define RfSTArefriaccu_Pin GPIO_PIN_13
-#define RfSTArefriaccu_GPIO_Port GPIOC
-#define RfSTArefriinverter_Pin GPIO_PIN_14
-#define RfSTArefriinverter_GPIO_Port GPIOC
-#define RfSTArefrimot_Pin GPIO_PIN_15
-#define RfSTArefrimot_GPIO_Port GPIOC
-#define RfSIGOtempI_Pin GPIO_PIN_0
-#define RfSIGOtempI_GPIO_Port GPIOA
-#define RfSIGItempI_Pin GPIO_PIN_1
-#define RfSIGItempI_GPIO_Port GPIOA
-#define RfSIGOtempM_Pin GPIO_PIN_2
-#define RfSIGOtempM_GPIO_Port GPIOA
-#define RfSIGItempM_Pin GPIO_PIN_3
-#define RfSIGItempM_GPIO_Port GPIOA
-#define RfSTAbrkledR_Pin GPIO_PIN_4
-#define RfSTAbrkledR_GPIO_Port GPIOA
-#define RfSTAbrkledG_Pin GPIO_PIN_5
-#define RfSTAbrkledG_GPIO_Port GPIOA
-#define RfSTAbrkledB_Pin GPIO_PIN_6
-#define RfSTAbrkledB_GPIO_Port GPIOA
-#define RfSHU_Pin GPIO_PIN_7
-#define RfSHU_GPIO_Port GPIOA
-#define RfSIGRsus_Pin GPIO_PIN_0
-#define RfSIGRsus_GPIO_Port GPIOB
-#define RfSIGLsus_Pin GPIO_PIN_1
-#define RfSIGLsus_GPIO_Port GPIOB
-#define RfSIGlvs_Pin GPIO_PIN_2
-#define RfSIGlvs_GPIO_Port GPIOB
-#define RfSDChvd_Pin GPIO_PIN_11
-#define RfSDChvd_GPIO_Port GPIOB
-#define RfSDCtsms_Pin GPIO_PIN_12
-#define RfSDCtsms_GPIO_Port GPIOB
-#define RfSDClsdb_Pin GPIO_PIN_13
-#define RfSDClsdb_GPIO_Port GPIOB
-#define RfSDCrsdb_Pin GPIO_PIN_14
-#define RfSDCrsdb_GPIO_Port GPIOB
-#define RfSIGLspeed_Pin GPIO_PIN_4
-#define RfSIGLspeed_GPIO_Port GPIOB
-#define RfSIGRspeed_Pin GPIO_PIN_5
-#define RfSIGRspeed_GPIO_Port GPIOB
-
-/* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
