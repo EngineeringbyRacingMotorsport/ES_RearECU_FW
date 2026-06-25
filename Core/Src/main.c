@@ -103,6 +103,14 @@ int main(void)
   DICCP_t DICCP = {0};
   CAN_Init_Custom(&hfdcan1);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+
+  Inverter_Request_Data(&hfdcan1, 0x30, 10); //RPM
+  Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
+  Inverter_Request_Data(&hfdcan1, 0xA0, 20);// Par
+  Inverter_Request_Data(&hfdcan1, 0xA8, 20); //V
+  Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
+  Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
+  Inverter_Request_Data(&hfdcan1, 0x8F, 500);// Err
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,7 +122,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
-	  uint8_t Msg[6] = {0};
+	  uint8_t Msg[20] = {0};
 
 	  DIG2DICCF(&DICCF);
 
@@ -124,7 +132,7 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg);
 
-	  CAN_Send(&hfdcan1, 0x020, Msg, 6);
+	  CAN_Send(&hfdcan1, 0x200, Msg, 20);
 
 	  HAL_Delay(10);
   }

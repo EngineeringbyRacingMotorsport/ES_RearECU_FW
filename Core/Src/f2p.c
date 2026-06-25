@@ -26,10 +26,10 @@ void DIG2DICCF(DICCF_t *DICCF){
 }
 
 void DICCF2DICCP(DICCF_t *DICCF, DICCP_t *DICCP) {
-	DICCP->RpSDChvd = DICCF->RfSDChvd;
-	DICCP->RpSDCtsms = DICCF->RfSDCtsms;
-	DICCP->RpSDClsdb = DICCF->RfSDClsdb;
-	DICCP->RpSDCrsdb = DICCF->RfSDCrsdb;
+	DICCP->RpSDChvd = !DICCF->RfSDChvd;
+	DICCP->RpSDCtsms = !DICCF->RfSDCtsms;
+	DICCP->RpSDClsdb = !DICCF->RfSDClsdb;
+	DICCP->RpSDCrsdb = !DICCF->RfSDCrsdb;
 
 	DICCP->RpSTAbrkledR = DICCF->RfSTAbrkledR;
 	DICCP->RpSTAbrkledG = DICCF->RfSTAbrkledG;
@@ -38,13 +38,15 @@ void DICCF2DICCP(DICCF_t *DICCF, DICCP_t *DICCP) {
 	DICCP->RpSTArefrimot = DICCF->RfSTArefrimot;
 	DICCP->RpSTArefriinverter = DICCF->RfSTArefriinverter;
 
-	DICCP->IpDSDC = DICCF->IfDSDC;
-	DICCP->IpREGID = DICCF->IfREGID;
-	DICCP->IpFDIGr2d = DICCF->IfFDIGr2d;
-	DICCP->IpINVdata = DICCF->IfINVdata;
-	DICCP->IpFANLRpot = DICCF->IfFANLRpot;
-	DICCP->IpFANLLpot = DICCF->IfFANLLpot;
-
-	DICCP->RpSIGlvs = ((DICCF->RfSIGlvs*3.3)/2095)/(0.13*100)*1000;
+	DICCP->RpSIGlvs = ((DICCF->RfSIGlvs*3.3)/2095)*9.195;
 	DICCP->RpSHU = ((DICCF->RfSHU*3.3)/2095)/(0.13*100)*1000;
+
+	DICCP->IpRPM = (DICCF->IfRPM * 5600) / 20000;
+	DICCP->IpI = (DICCF->IfI * 235) / 2000;
+	DICCP->IpV = DICCF->IfV * 10;
+	DICCP->IpPar = (DICCF->IfPar / 20) + 1000;
+	DICCP->IpT_IGBT = DICCF->IfT_IGBT;
+	DICCP->IpT_Mot = DICCF->IfT_Mot;
+	DICCP->IpErrL = DICCF->IfErr & 0xFFFF;
+	DICCP->IpErrH = (DICCF->IfErr >> 16) & 0xFFFF;
 }

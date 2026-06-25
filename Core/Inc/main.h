@@ -100,12 +100,13 @@ typedef struct {
 		uint8_t RfSTArefrimot;
 		uint8_t RfSTArefriinverter;
 		//Inverter
-		uint8_t IfFDIGr2d;
-		uint8_t IfDSDC;
-		uint8_t IfFANLRpot;
-		uint8_t IfFANLLpot;
-		uint8_t IfREGID;
-		uint8_t IfINVdata;
+		uint16_t IfRPM;
+		uint16_t IfI;
+		float IfPar;
+		uint16_t IfV;
+		uint16_t IfT_IGBT;
+		uint16_t IfT_Mot;
+		uint32_t IfErr;
 } DICCF_t;
 
 extern DICCF_t DICCF;
@@ -126,13 +127,14 @@ typedef struct {
 	uint8_t RpSTArefrimot;
 	uint8_t RpSTArefriinverter;
 	//Inverter
-	uint8_t IpFDIGr2d;
-	uint8_t IpDSDC;
-	uint8_t IpFANLRpot;
-	uint8_t IpFANLLpot;
-	uint8_t IpREGID;
-	uint8_t IpINVdata;
-
+	uint8_t IpRPM;
+	uint8_t IpI;
+	uint8_t IpPar;
+	uint8_t IpV;
+	uint8_t IpT_IGBT;
+	uint8_t IpT_Mot;
+	uint8_t IpErrL;
+	uint8_t IpErrH;
 } DICCP_t;
 
 extern DICCP_t DICCP;
