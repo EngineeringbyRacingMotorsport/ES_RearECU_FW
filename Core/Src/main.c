@@ -122,7 +122,9 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
-	  uint8_t Msg[20] = {0};
+	  uint8_t Msg1[8] = {0};
+	  uint8_t Msg2[8] = {0};
+	  uint8_t Msg3[4] = {0};
 
 	  DIG2DICCF(&DICCF);
 
@@ -130,9 +132,13 @@ int main(void)
 
 	  DICCF2DICCP(&DICCF, &DICCP);
 
-	  CAN_Msg_Maker(&DICCP, Msg);
+	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  CAN_Send(&hfdcan1, 0x200, Msg, 20);
+	  CAN_Send(&hfdcan1, 0x201, Msg1, 8);
+
+	  CAN_Send(&hfdcan1, 0x202, Msg2, 8);
+
+	  CAN_Send(&hfdcan1, 0x203, Msg2, 8);
 
 	  HAL_Delay(10);
   }

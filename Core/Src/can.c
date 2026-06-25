@@ -27,46 +27,46 @@ void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan) {
     if (HAL_FDCAN_Start(hfdcan) != HAL_OK) Error_Handler();
 }
 
-void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg)
+void CAN_Msg_Maker(DICCP_t *DICCP, uint8_t *Msg1, uint8_t *Msg2, uint8_t *Msg3)
 {
-	Msg[0] |= ((DICCP->RpSDChvd & 0x01) << 0);
-	Msg[0] |= ((DICCP->RpSDCtsms & 0x01) << 1);
-	Msg[0] |= ((DICCP->RpSDCrsdb & 0x01) << 2);
-	Msg[0] |= ((DICCP->RpSDClsdb & 0x01) << 3);
+	Msg1[0] |= ((DICCP->RpSDChvd & 0x01) << 0);
+	Msg1[0] |= ((DICCP->RpSDCtsms & 0x01) << 1);
+	Msg1[0] |= ((DICCP->RpSDCrsdb & 0x01) << 2);
+	Msg1[0] |= ((DICCP->RpSDClsdb & 0x01) << 3);
 
-	Msg[1] |= ((DICCP->RpSTAbrkledR & 0x01) << 0);
-	Msg[1] |= ((DICCP->RpSTAbrkledG & 0x01) << 1);
-	Msg[1] |= ((DICCP->RpSTAbrkledB & 0x01) << 2);
-	Msg[1] |= ((DICCP->RpSTArefriaccu & 0x01) << 3);
-	Msg[1] |= ((DICCP->RpSTArefrimot & 0x01) << 4);
-	Msg[1] |= ((DICCP->RpSTArefriinverter & 0x01) << 5);
+	Msg1[1] |= ((DICCP->RpSTAbrkledR & 0x01) << 0);
+	Msg1[1] |= ((DICCP->RpSTAbrkledG & 0x01) << 1);
+	Msg1[1] |= ((DICCP->RpSTAbrkledB & 0x01) << 2);
+	Msg1[1] |= ((DICCP->RpSTArefriaccu & 0x01) << 3);
+	Msg1[1] |= ((DICCP->RpSTArefrimot & 0x01) << 4);
+	Msg1[1] |= ((DICCP->RpSTArefriinverter & 0x01) << 5);
 
-	Msg[2] |= ((DICCP->RpSIGlvs & 0x00FF) << 0);
-	Msg[3] |= ((DICCP->RpSIGlvs & 0xFF00) >> 8);
+	Msg1[2] |= ((DICCP->RpSIGlvs & 0x00FF) << 0);
+	Msg1[3] |= ((DICCP->RpSIGlvs & 0xFF00) >> 8);
 
-	Msg[4] |= ((DICCP->RpSHU & 0x00FF) << 0);
-	Msg[5] |= ((DICCP->RpSHU & 0xFF00) >> 8);
+	Msg1[4] |= ((DICCP->RpSHU & 0x00FF) << 0);
+	Msg1[5] |= ((DICCP->RpSHU & 0xFF00) >> 8);
 
-	Msg[6] |= (uint8_t)(DICCP->IpRPM & 0x00FF) << 0);
-	Msg[7] |= (uint8_t)((DICCP->IpRPM & 0xFF00) >> 8);
+	Msg1[6] |= ((DICCP->IpRPM & 0x00FF) << 0);
+	Msg1[7] |= ((DICCP->IpRPM & 0xFF00) >> 8);
 
-	Msg[8] |= (uint8_t)(DICCP->IpI & 0x00FF) << 0);
-	Msg[9] |= (uint8_t)((DICCP->IpI & 0xFF00) >> 8);
+	Msg2[0] |= ((DICCP->IpI & 0x00FF) << 0);
+	Msg2[1] |= ((DICCP->IpI & 0xFF00) >> 8);
 
-	Msg[10] |= (uint8_t)(DICCP->IpV & 0x00FF) << 0);
-	Msg[11] |= (uint8_t)((DICCP->IpV & 0xFF00) >> 8);
+	Msg2[2] |= ((DICCP->IpV & 0x00FF) << 0);
+	Msg2[3] |= ((DICCP->IpV & 0xFF00) >> 8);
 
-	Msg[12] |= (uint8_t)(DICCP->IpPar & 0x00FF) << 0);
-	Msg[13] |= (uint8_t)((DICCP->IpPar & 0xFF00) >> 8);
+	Msg2[4] |= ((DICCP->IpPar & 0x00FF) << 0);
+	Msg2[5] |= ((DICCP->IpPar & 0xFF00) >> 8);
 
-	Msg[14] |= (uint8_t)(DICCP->IpT_IGBT & 0x00FF) << 0);
-	Msg[15] |= (uint8_t)((DICCP->IpT_IGBT & 0xFF00) >> 8);
+	Msg2[6] |= ((DICCP->IpT_IGBT & 0x00FF) << 0);
+	Msg2[7] |= ((DICCP->IpT_IGBT & 0xFF00) >> 8);
 
-	Msg[16] |= (uint8_t)(DICCP->IpT_Mot & 0x00FF) << 0);
-	Msg[17] |= (uint8_t)((DICCP->IpT_Mot & 0xFF00) >> 8);
+	Msg3[0] |= ((DICCP->IpT_Mot & 0x00FF) << 0);
+	Msg3[1] |= ((DICCP->IpT_Mot & 0xFF00) >> 8);
 
-	Msg[18] |= (uint8_t)(DICCP->IpErrL & 0x00FF) << 0);
-	Msg[19] |= (uint8_t)((DICCP->IpErrH & 0xFF00) >> 8);
+	Msg3[2] |= ((DICCP->IpErrL & 0x00FF) << 0);
+	Msg3[3] |= ((DICCP->IpErrH & 0xFF00) >> 8);
 }
 
 HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *data, uint32_t len) {
@@ -87,7 +87,7 @@ HAL_StatusTypeDef CAN_Send(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *da
 }
 
 
-void Inverter_Request_Data(FDCAN_HandleTypeDef *hfdcan, uint8_t regID, uint8_t interval_ms)
+void Inverter_Request_Data(FDCAN_HandleTypeDef *hfdcan, uint8_t regID, uint16_t interval_ms)
 {
     FDCAN_TxHeaderTypeDef TxHeader;
     uint8_t TxData[3];
