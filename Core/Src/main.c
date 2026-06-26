@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "f2p.h"
 #include "can.h"
+#include "p2f.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,11 +107,11 @@ int main(void)
 
   Inverter_Request_Data(&hfdcan1, 0x30, 10); //RPM
   Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
-  Inverter_Request_Data(&hfdcan1, 0xA0, 20);// Par
-  Inverter_Request_Data(&hfdcan1, 0xA8, 20); //V
+  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par
+  Inverter_Request_Data(&hfdcan1, 0xA8, 10); //V
   Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
   Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
-  Inverter_Request_Data(&hfdcan1, 0x8F, 500);// Err
+  Inverter_Request_Data(&hfdcan1, 0x8F, 200);// Err
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,9 +123,9 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
-	  uint8_t Msg1[8] = {0};
+	  uint8_t Msg1[5] = {0};
 	  uint8_t Msg2[8] = {0};
-	  uint8_t Msg3[4] = {0};
+	  uint8_t Msg3[8] = {0};
 
 	  DIG2DICCF(&DICCF);
 
@@ -134,11 +135,13 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  CAN_Send(&hfdcan1, 0x201, Msg1, 8);
+	  CAN_Send(&hfdcan1, 0x201, Msg1, 5);
 
 	  CAN_Send(&hfdcan1, 0x202, Msg2, 8);
 
-	  CAN_Send(&hfdcan1, 0x203, Msg2, 8);
+	  CAN_Send(&hfdcan1, 0x203, Msg3, 8);
+
+	  PLC(&DICCP);
 
 	  HAL_Delay(10);
   }

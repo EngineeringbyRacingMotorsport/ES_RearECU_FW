@@ -1,4 +1,4 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/p2f.o: ../Core/Src/p2f.c ../Core/Inc/p2f.h ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h \
  ../Core/Inc/stm32g4xx_hal_conf.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc.h \
@@ -27,8 +27,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h \
- ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h \
- ../Core/Inc/f2p.h ../Core/Inc/main.h ../Core/Inc/can.h ../Core/Inc/p2f.h
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h
+../Core/Inc/p2f.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -59,7 +59,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h:
-../Core/Inc/f2p.h:
-../Core/Inc/main.h:
-../Core/Inc/can.h:
-../Core/Inc/p2f.h:
