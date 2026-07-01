@@ -50,6 +50,7 @@ FDCAN_HandleTypeDef hfdcan1;
 /* USER CODE BEGIN PV */
 #define DMA_CH2 2
 uint32_t DICCDMA[DMA_CH2];
+uint8_t LastCANSendTime = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,6 +101,7 @@ int main(void)
   MX_FDCAN1_Init();
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(2000);
   DICCF_t DICCF = {0};
   DICCP_t DICCP = {0};
   CAN_Init_Custom(&hfdcan1);
@@ -135,15 +137,17 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  CAN_Send(&hfdcan1, 0x201, Msg1, 5);
+	  if(HAL_GetTick() - LastCANSendTime >= 1000)
+	  {
+		  CAN_Send(&hfdcan1, 0x201, Msg1, 5);
 
-	  CAN_Send(&hfdcan1, 0x202, Msg2, 8);
+		  CAN_Send(&hfdcan1, 0x202, Msg2, 8);
 
-	  CAN_Send(&hfdcan1, 0x203, Msg3, 8);
+		  CAN_Send(&hfdcan1, 0x203, Msg3, 8);
+		  LastCANSendTime = HAL_GetTick();
+	  }
 
 	  PLC(&DICCP);
-
-	  HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
