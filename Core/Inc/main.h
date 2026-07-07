@@ -108,7 +108,7 @@ typedef struct {
 		uint32_t IfErr;
 } DICCF_t;
 
-extern DICCF_t DICCF;
+extern volatile DICCF_t DICCF;
 
 typedef struct {
 	//Analog
@@ -137,7 +137,7 @@ typedef struct {
 	uint8_t IpErrH2;
 } DICCP_t;
 
-extern DICCP_t DICCP;
+extern volatile DICCP_t DICCP;
 
 /* USER CODE END Private defines */
 
