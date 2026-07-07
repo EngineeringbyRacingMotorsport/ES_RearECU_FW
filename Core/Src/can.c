@@ -166,11 +166,7 @@
 
 				if(RxHeader.Identifier == 0x100)
 				{
-					if (RxHeader.DataLength >= FDCAN_DLC_BYTES_5) { // O utilitza el valor numèric real segons HAL
-						DICCF.FfANLbrake = RxData[4];
-					} else {
-						// ERROR: El missatge arriba, però és massa curt!
-					}
+					DICCP.FpANLbrake = RxData[4];
 				}
 			}
 		}

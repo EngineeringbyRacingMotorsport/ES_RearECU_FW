@@ -126,6 +126,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
 	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
 	  uint8_t Msg1[5] = {0};
@@ -140,7 +141,7 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  if(HAL_GetTick() - LastCANSendTime >= 100)
+	  if(HAL_GetTick() - LastCANSendTime >= 10)
 	  {
 		  CAN_Send(&hfdcan1, 0x200, Msg1, 5);
 
