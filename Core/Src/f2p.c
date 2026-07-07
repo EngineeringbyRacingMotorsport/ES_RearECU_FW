@@ -35,8 +35,6 @@ void DICCF2DICCP(volatile DICCF_t *DICCF, volatile DICCP_t *DICCP) {
 	DICCP->RpSIGlvs = ((DICCF->RfSIGlvs*3.3)/2095)*9.195;
 	DICCP->RpSHU = ((DICCF->RfSHU*3.3)/2095)/(0.13*100)*1000;
 
-	DICCP->FpANLbrake = DICCF->FfANLbrake;
-
 	DICCP->IpRPM = DICCF->IfRPM;
 	DICCP->IpI = DICCF->IfI;
 	DICCP->IpV = DICCF->IfV;
