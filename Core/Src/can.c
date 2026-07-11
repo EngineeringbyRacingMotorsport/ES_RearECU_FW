@@ -168,6 +168,10 @@
 				{
 					DICCP.FpANLbrake = RxData[4];
 				}
+				if(RxHeader.Identifier == 0x101)
+				{
+					DICCP.FpDIGr2d = (RxData[1] >> 5) & 0x01;
+				}
 			}
 		}
 	}

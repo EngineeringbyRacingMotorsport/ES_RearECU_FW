@@ -50,7 +50,7 @@ FDCAN_HandleTypeDef hfdcan1;
 /* USER CODE BEGIN PV */
 #define DMA_CH2 2
 uint32_t DICCDMA[DMA_CH2];
-uint8_t LastCANSendTime = 0;
+uint32_t LastCANSendTime = 0;
 
 volatile DICCF_t DICCF = {0};
 volatile DICCP_t DICCP = {0};
@@ -104,8 +104,6 @@ int main(void)
   MX_FDCAN1_Init();
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_Delay(15000);
-  HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_SET);
 
   CAN_Init_Custom(&hfdcan1);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
@@ -141,7 +139,7 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  if(HAL_GetTick() - LastCANSendTime >= 10)
+	  if((HAL_GetTick() - LastCANSendTime) >= 10)
 	  {
 		  CAN_Send(&hfdcan1, 0x200, Msg1, 5);
 

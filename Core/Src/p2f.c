@@ -12,10 +12,10 @@ void PLC(volatile DICCP_t *DICCP)
 //	else
 //	{ HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_RESET); }
 //
-//	if(DifTempAccu >= DICCP->RpSTArefriaccu)
-//	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_SET); }
-//	else
-//	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_RESET); }
+	if(DICCP->FpDIGr2d == 1)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_SET); }
+	else
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_RESET); }
 
 	if(DICCP->FpANLbrake >= 5)
 	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledR_Pin, GPIO_PIN_SET);
