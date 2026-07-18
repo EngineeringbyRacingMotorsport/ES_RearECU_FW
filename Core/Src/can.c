@@ -91,7 +91,7 @@
 		uint8_t TxData[3];
 
 		// Configuración específica para el periférico FDCAN del STM32G4
-		TxHeader.Identifier = 0x201;                      // ID estándar del Bamocar (Nodo 1)
+		TxHeader.Identifier = 0x102;                      // ID estándar del Bamocar (Nodo 1)
 		TxHeader.IdType = FDCAN_STANDARD_ID;              // Identificador estándar (11 bits)
 		TxHeader.TxFrameType = FDCAN_DATA_FRAME;          // Frame de datos normal
 		TxHeader.DataLength = FDCAN_DLC_BYTES_3;          // El Bamocar exige exactamente 3 bytes

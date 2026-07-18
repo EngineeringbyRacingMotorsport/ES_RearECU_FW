@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  000266bf  00000000  00000000  0001a381  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000f623  00000000  00000000  00040a40  2**0
+ 17 .debug_line   0000f621  00000000  00000000  00040a40  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000fbce0  00000000  00000000  00050063  2**0
+ 18 .debug_str    000fbce0  00000000  00000000  00050061  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0014bd43  2**0
+ 19 .comment      00000043  00000000  00000000  0014bd41  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003a50  00000000  00000000  0014bd88  2**2
+ 20 .debug_frame  00003a50  00000000  00000000  0014bd84  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000053  00000000  00000000  0014f7d8  2**0
+ 21 .debug_line_str 00000053  00000000  00000000  0014f7d4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1306,8 +1306,8 @@ Disassembly of section .text:
 		uint8_t TxData[3];
 
 		// Configuración específica para el periférico FDCAN del STM32G4
-		TxHeader.Identifier = 0x201;                      // ID estándar del Bamocar (Nodo 1)
- 8000ddc:	f240 2301 	movw	r3, #513	@ 0x201
+		TxHeader.Identifier = 0x102;                      // ID estándar del Bamocar (Nodo 1)
+ 8000ddc:	f44f 7381 	mov.w	r3, #258	@ 0x102
  8000de0:	60fb      	str	r3, [r7, #12]
 		TxHeader.IdType = FDCAN_STANDARD_ID;              // Identificador estándar (11 bits)
  8000de2:	2300      	movs	r3, #0
@@ -1949,56 +1949,57 @@ int main(void)
   CAN_Init_Custom(&hfdcan1);
  800124e:	483c      	ldr	r0, [pc, #240]	@ (8001340 <main+0x110>)
  8001250:	f7ff fbd0 	bl	80009f4 <CAN_Init_Custom>
+
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
  8001254:	217f      	movs	r1, #127	@ 0x7f
  8001256:	483b      	ldr	r0, [pc, #236]	@ (8001344 <main+0x114>)
  8001258:	f001 ff82 	bl	8003160 <HAL_ADCEx_Calibration_Start>
 
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t *)DICCDMA, 2);
+ 800125c:	2202      	movs	r2, #2
+ 800125e:	493a      	ldr	r1, [pc, #232]	@ (8001348 <main+0x118>)
+ 8001260:	4838      	ldr	r0, [pc, #224]	@ (8001344 <main+0x114>)
+ 8001262:	f001 f895 	bl	8002390 <HAL_ADC_Start_DMA>
+
   Inverter_Request_Data(&hfdcan1, 0x30, 10); //RPM
- 800125c:	220a      	movs	r2, #10
- 800125e:	2130      	movs	r1, #48	@ 0x30
- 8001260:	4837      	ldr	r0, [pc, #220]	@ (8001340 <main+0x110>)
- 8001262:	f7ff fdb3 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
  8001266:	220a      	movs	r2, #10
- 8001268:	2148      	movs	r1, #72	@ 0x48
+ 8001268:	2130      	movs	r1, #48	@ 0x30
  800126a:	4835      	ldr	r0, [pc, #212]	@ (8001340 <main+0x110>)
  800126c:	f7ff fdae 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par
+  Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
  8001270:	220a      	movs	r2, #10
- 8001272:	21a0      	movs	r1, #160	@ 0xa0
+ 8001272:	2148      	movs	r1, #72	@ 0x48
  8001274:	4832      	ldr	r0, [pc, #200]	@ (8001340 <main+0x110>)
  8001276:	f7ff fda9 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0xA8, 10); //V
+  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par.
  800127a:	220a      	movs	r2, #10
- 800127c:	21a8      	movs	r1, #168	@ 0xa8
+ 800127c:	21a0      	movs	r1, #160	@ 0xa0
  800127e:	4830      	ldr	r0, [pc, #192]	@ (8001340 <main+0x110>)
  8001280:	f7ff fda4 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
- 8001284:	22c8      	movs	r2, #200	@ 0xc8
- 8001286:	214a      	movs	r1, #74	@ 0x4a
+  Inverter_Request_Data(&hfdcan1, 0xA8, 10); //V
+ 8001284:	220a      	movs	r2, #10
+ 8001286:	21a8      	movs	r1, #168	@ 0xa8
  8001288:	482d      	ldr	r0, [pc, #180]	@ (8001340 <main+0x110>)
  800128a:	f7ff fd9f 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
+  Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
  800128e:	22c8      	movs	r2, #200	@ 0xc8
- 8001290:	2149      	movs	r1, #73	@ 0x49
+ 8001290:	214a      	movs	r1, #74	@ 0x4a
  8001292:	482b      	ldr	r0, [pc, #172]	@ (8001340 <main+0x110>)
  8001294:	f7ff fd9a 	bl	8000dcc <Inverter_Request_Data>
-  Inverter_Request_Data(&hfdcan1, 0x8F, 200);// Err
+  Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
  8001298:	22c8      	movs	r2, #200	@ 0xc8
- 800129a:	218f      	movs	r1, #143	@ 0x8f
+ 800129a:	2149      	movs	r1, #73	@ 0x49
  800129c:	4828      	ldr	r0, [pc, #160]	@ (8001340 <main+0x110>)
  800129e:	f7ff fd95 	bl	8000dcc <Inverter_Request_Data>
+  Inverter_Request_Data(&hfdcan1, 0x8F, 200);// Err
+ 80012a2:	22c8      	movs	r2, #200	@ 0xc8
+ 80012a4:	218f      	movs	r1, #143	@ 0x8f
+ 80012a6:	4826      	ldr	r0, [pc, #152]	@ (8001340 <main+0x110>)
+ 80012a8:	f7ff fd90 	bl	8000dcc <Inverter_Request_Data>
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
- 80012a2:	2202      	movs	r2, #2
- 80012a4:	4928      	ldr	r1, [pc, #160]	@ (8001348 <main+0x118>)
- 80012a6:	4827      	ldr	r0, [pc, #156]	@ (8001344 <main+0x114>)
- 80012a8:	f001 f872 	bl	8002390 <HAL_ADC_Start_DMA>
 
 	  uint8_t Msg1[5] = {0};
  80012ac:	f107 0310 	add.w	r3, r7, #16
@@ -2078,7 +2079,7 @@ int main(void)
  8001336:	4806      	ldr	r0, [pc, #24]	@ (8001350 <main+0x120>)
  8001338:	f000 f9be 	bl	80016b8 <PLC>
   {
- 800133c:	e7b1      	b.n	80012a2 <main+0x72>
+ 800133c:	e7b6      	b.n	80012ac <main+0x7c>
  800133e:	bf00      	nop
  8001340:	200000f4 	.word	0x200000f4
  8001344:	20000028 	.word	0x20000028
@@ -2982,13 +2983,13 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  800186e:	4b14      	ldr	r3, [pc, #80]	@ (80018c0 <HAL_ADC_MspInit+0x134>)
  8001870:	2280      	movs	r2, #128	@ 0x80
  8001872:	611a      	str	r2, [r3, #16]
-    hdma_adc2.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_adc2.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
  8001874:	4b12      	ldr	r3, [pc, #72]	@ (80018c0 <HAL_ADC_MspInit+0x134>)
- 8001876:	f44f 7280 	mov.w	r2, #256	@ 0x100
+ 8001876:	f44f 7200 	mov.w	r2, #512	@ 0x200
  800187a:	615a      	str	r2, [r3, #20]
-    hdma_adc2.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    hdma_adc2.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
  800187c:	4b10      	ldr	r3, [pc, #64]	@ (80018c0 <HAL_ADC_MspInit+0x134>)
- 800187e:	f44f 6280 	mov.w	r2, #1024	@ 0x400
+ 800187e:	f44f 6200 	mov.w	r2, #2048	@ 0x800
  8001882:	619a      	str	r2, [r3, #24]
     hdma_adc2.Init.Mode = DMA_CIRCULAR;
  8001884:	4b0e      	ldr	r3, [pc, #56]	@ (80018c0 <HAL_ADC_MspInit+0x134>)

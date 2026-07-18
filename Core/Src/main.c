@@ -106,11 +106,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   CAN_Init_Custom(&hfdcan1);
+
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t *)DICCDMA, 2);
 
   Inverter_Request_Data(&hfdcan1, 0x30, 10); //RPM
   Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
-  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par
+  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par.
   Inverter_Request_Data(&hfdcan1, 0xA8, 10); //V
   Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
   Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
@@ -124,8 +127,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
 	  uint8_t Msg1[5] = {0};
 	  uint8_t Msg2[8] = {0};
@@ -320,11 +321,6 @@ static void MX_DMA_Init(void)
   /* DMA controller clock enable */
   __HAL_RCC_DMAMUX1_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
 
