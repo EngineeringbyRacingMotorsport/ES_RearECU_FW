@@ -7,6 +7,8 @@
 
 	#include <can.h>
 
+	extern volatile uint8_t Bamocar_Configured;
+
 	void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan) {
 		FDCAN_FilterTypeDef sFilterConfig;
 
@@ -171,6 +173,11 @@
 				if(RxHeader.Identifier == 0x101)
 				{
 					DICCP.FpDIGr2d = (RxData[1] >> 5) & 0x01;
+				}
+				if (RxHeader.Identifier == 0x104)
+				{
+				    Bamocar_Configured = 1; // L'inversor s'ha despertat i respon!
+				    // ... la teva lògica switch/case es queda exactament igual
 				}
 			}
 		}
