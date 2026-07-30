@@ -51,6 +51,10 @@ FDCAN_HandleTypeDef hfdcan1;
 #define DMA_CH2 2
 uint32_t DICCDMA[DMA_CH2];
 uint32_t LastCANSendTime = 0;
+uint8_t  LastCANSendTime10 = 0;
+
+volatile uint8_t Bamocar_Configured = 0;   // 0 = Pendent de configurar, 1 = Configurat i actiu
+uint32_t LastConfigRetryTime = 0;
 
 volatile DICCF_t DICCF = {0};
 volatile DICCP_t DICCP = {0};
@@ -106,15 +110,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   CAN_Init_Custom(&hfdcan1);
+
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
 
-  Inverter_Request_Data(&hfdcan1, 0x30, 10); //RPM
-  Inverter_Request_Data(&hfdcan1, 0x48, 10); //I
-  Inverter_Request_Data(&hfdcan1, 0xA0, 10);// Par
-  Inverter_Request_Data(&hfdcan1, 0xA8, 10); //V
-  Inverter_Request_Data(&hfdcan1, 0x4A, 200);//T IGBT
-  Inverter_Request_Data(&hfdcan1, 0x49, 200);//T Mot
-  Inverter_Request_Data(&hfdcan1, 0x8F, 200);// Err
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t *)DICCDMA, 2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -124,8 +123,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	  HAL_ADC_Start_DMA(&hadc2, DICCDMA, DMA_CH2);
 
 	  uint8_t Msg1[5] = {0};
 	  uint8_t Msg2[8] = {0};
@@ -139,7 +136,7 @@ int main(void)
 
 	  CAN_Msg_Maker(&DICCP, Msg1, Msg2, Msg3);
 
-	  if((HAL_GetTick() - LastCANSendTime) >= 10)
+	  if((HAL_GetTick() - LastCANSendTime) >= 100)
 	  {
 		  CAN_Send(&hfdcan1, 0x200, Msg1, 5);
 
@@ -149,6 +146,22 @@ int main(void)
 
 		  LastCANSendTime = HAL_GetTick();
 	  }
+
+	  if (Bamocar_Configured == 0)
+	        {
+	            if ((HAL_GetTick() - LastConfigRetryTime) >= 1000)
+	            {
+	                Inverter_Request_Data(&hfdcan1, 0x30, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0x48, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0xA0, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0xA8, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0x4A, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0x49, 100); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0x8F, 200); HAL_Delay(5);
+
+	                LastConfigRetryTime = HAL_GetTick();
+	            }
+	        }
 
 	  PLC(&DICCP);
   }
@@ -320,11 +333,6 @@ static void MX_DMA_Init(void)
   /* DMA controller clock enable */
   __HAL_RCC_DMAMUX1_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
 

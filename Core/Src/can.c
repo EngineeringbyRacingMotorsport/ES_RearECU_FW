@@ -7,6 +7,8 @@
 
 	#include <can.h>
 
+	extern volatile uint8_t Bamocar_Configured;
+
 	void CAN_Init_Custom(FDCAN_HandleTypeDef *hfdcan) {
 		FDCAN_FilterTypeDef sFilterConfig;
 
@@ -91,7 +93,7 @@
 		uint8_t TxData[3];
 
 		// Configuración específica para el periférico FDCAN del STM32G4
-		TxHeader.Identifier = 0x201;                      // ID estándar del Bamocar (Nodo 1)
+		TxHeader.Identifier = 0x102;                      // ID estándar del Bamocar (Nodo 1)
 		TxHeader.IdType = FDCAN_STANDARD_ID;              // Identificador estándar (11 bits)
 		TxHeader.TxFrameType = FDCAN_DATA_FRAME;          // Frame de datos normal
 		TxHeader.DataLength = FDCAN_DLC_BYTES_3;          // El Bamocar exige exactamente 3 bytes
@@ -171,6 +173,11 @@
 				if(RxHeader.Identifier == 0x101)
 				{
 					DICCP.FpDIGr2d = (RxData[1] >> 5) & 0x01;
+				}
+				if (RxHeader.Identifier == 0x104)
+				{
+				    Bamocar_Configured = 1; // L'inversor s'ha despertat i respon!
+				    // ... la teva lògica switch/case es queda exactament igual
 				}
 			}
 		}
