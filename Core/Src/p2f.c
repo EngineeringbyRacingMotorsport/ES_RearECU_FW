@@ -26,6 +26,13 @@ void PLC(volatile DICCP_t *DICCP)
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledG_Pin, GPIO_PIN_RESET);
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledB_Pin, GPIO_PIN_RESET);}
 
+	if(DICCP->FpINTrefrion == 1)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_SET);}
+	else
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_RESET);}
+
 //	if(DICCP->RpSTAbrkledG != 0)
 //	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledG_Pin, GPIO_PIN_SET); }
 //	else

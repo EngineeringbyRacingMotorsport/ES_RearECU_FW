@@ -173,6 +173,7 @@
 				if(RxHeader.Identifier == 0x101)
 				{
 					DICCP.FpDIGr2d = (RxData[1] >> 5) & 0x01;
+					DICCP.FpINTrefrion = (RxData[1] >> 6) & 0x01;
 				}
 				if (RxHeader.Identifier == 0x104)
 				{

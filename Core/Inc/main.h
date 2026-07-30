@@ -123,6 +123,7 @@ typedef struct {
 	//Front ECU
 	uint8_t FpANLbrake;
 	uint8_t FpDIGr2d;
+	uint8_t FpINTrefrion;
 	//Inverter
 	uint8_t IpRPM;
 	uint8_t IpI;
