@@ -17,7 +17,7 @@ void PLC(volatile DICCP_t *DICCP)
 	else
 	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_RESET); }
 
-	if(DICCP->FpANLbrake >= 5)
+	if(DICCP->FpANLbrake >= 10)
 	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledR_Pin, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledG_Pin, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledB_Pin, GPIO_PIN_SET);}
