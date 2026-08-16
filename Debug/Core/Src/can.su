@@ -2,4 +2,4 @@
 ../Core/Src/can.c:32:7:CAN_Msg_Maker	24	static
 ../Core/Src/can.c:72:20:CAN_Send	64	static
 ../Core/Src/can.c:90:7:Inverter_Request_Data	56	static
-../Core/Src/can.c:118:7:HAL_FDCAN_RxFifo0Callback	72	static
+../Core/Src/can.c:118:7:HAL_FDCAN_RxFifo0Callback	96	static

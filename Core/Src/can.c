@@ -125,47 +125,6 @@
 		{
 			if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
 			{
-				if (RxHeader.Identifier == 0x104)
-				{
-					uint8_t regID = RxData[0];
-
-					if (regID != 0x8F)
-					{
-						int16_t raw_value = (RxData[2] << 8) | RxData[1];
-
-						switch (regID)
-						{
-							case 0x30:
-								DICCF.IfRPM = raw_value;
-								break;
-							case 0x48:
-								 DICCF.IfI = raw_value;
-								break;
-							case 0xA8:
-								 DICCF.IfV = raw_value ;
-								break;
-							case 0x4A:
-								 DICCF.IfT_IGBT = raw_value;
-								break;
-							case 0x49:
-								 DICCF.IfT_Mot = raw_value;
-								break;
-							case 0xA0:
-								DICCF.IfPar = raw_value;
-								break;
-							default:
-								break;
-						}
-					}
-					else if (regID == 0x8F)
-					{
-						 DICCF.IfErr = ((uint32_t)RxData[4] << 24) |
-										  ((uint32_t)RxData[3] << 16) |
-										  ((uint32_t)RxData[2] << 8)  |
-										  RxData[1];
-					}
-				}
-
 				if(RxHeader.Identifier == 0x100)
 				{
 					DICCP.FpANLbrake = RxData[4];
@@ -175,10 +134,60 @@
 					DICCP.FpDIGr2d = (RxData[1] >> 5) & 0x01;
 					DICCP.FpINTrefrion = (RxData[1] >> 6) & 0x01;
 				}
-				if (RxHeader.Identifier == 0x104)
+				if (RxHeader.Identifier == 0x103)
 				{
-				    Bamocar_Configured = 1; // L'inversor s'ha despertat i respon!
-				    // ... la teva lògica switch/case es queda exactament igual
+					if ((RxData[0] & 0xFF) == 0x4A)
+					{
+						uint16_t raw = (uint16_t)RxData[1] | ((uint16_t)RxData[2] << 8);
+
+						// Taula de punts de referència directes del fabricant (ADC vs Temp)
+						static const uint16_t adc_lut[] = {
+								16308, 16487, 16757, 17151, 17688, 18387, 19247,
+								20250, 21357, 22515, 23671, 24775, 25792, 26702, 27497, 28480
+						};
+						static const int8_t temp_lut[] = {
+								-30, -20, -10, 0, 10, 20, 30,
+								40, 50, 60, 70, 80, 90, 100, 110, 125
+						};
+
+						int16_t temp = -30;
+						uint8_t points = sizeof(adc_lut) / sizeof(adc_lut[0]);
+
+						if (raw <= adc_lut[0]) {
+							temp = temp_lut[0];
+						} else if (raw >= adc_lut[points - 1]) {
+							temp = temp_lut[points - 1];
+						} else {
+							for (uint8_t i = 0; i < points - 1; i++) {
+								if (raw >= adc_lut[i] && raw <= adc_lut[i + 1]) {
+									// Interpolació lineal entera entre els dos punts més propers
+									int32_t x0 = adc_lut[i];
+									int32_t x1 = adc_lut[i + 1];
+									int32_t y0 = temp_lut[i];
+									int32_t y1 = temp_lut[i + 1];
+
+									temp = (int16_t)(y0 + ((int32_t)(raw - x0) * (y1 - y0)) / (x1 - x0));
+									break;
+								}
+							}
+						}
+
+						DICCP.IpANLmaxt = temp; // Guardarà 32 amb raw=19435
+					}
+					else if ((RxData[0] & 0xFF) == 0x49)
+					{
+						// 1. Reconstrucció de la dada raw de 16 bits del Bamocar
+						uint16_t raw = (uint16_t)RxData[1] | ((uint16_t)RxData[2] << 8);
+
+						// 2. Càlcul lineal senzill sense decimals per al KTY81-210
+						int32_t temp = ((int32_t)raw * 11) / 1000 - 85;
+
+						// 3. Clamping de seguretat i assignació al camp del motor
+						if (temp < -20) temp = -20;
+						if (temp > 130) temp = 130;
+
+						DICCP.MpANLmaxt = (int16_t)temp;
+					}
 				}
 			}
 		}

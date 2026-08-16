@@ -135,6 +135,9 @@ typedef struct {
 	uint8_t IpErrH1;
 	uint8_t IpErrL2;
 	uint8_t IpErrH2;
+
+	uint16_t IpANLmaxt;
+	uint16_t MpANLmaxt;
 } DICCP_t;
 
 extern volatile DICCP_t DICCP;

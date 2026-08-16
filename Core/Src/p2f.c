@@ -17,7 +17,7 @@ void PLC(volatile DICCP_t *DICCP)
 	else
 	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriaccu_Pin, GPIO_PIN_RESET); }
 
-	if(DICCP->FpANLbrake >= 10)
+	if(DICCP->FpANLbrake >= 6)
 	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledR_Pin, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledG_Pin, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOA, RfSTAbrkledB_Pin, GPIO_PIN_SET);}
@@ -29,9 +29,19 @@ void PLC(volatile DICCP_t *DICCP)
 	if(DICCP->FpINTrefrion == 1)
 	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_SET);}
-	else
-	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_RESET);}
+
+	if(DICCP->MpANLmaxt >= 45 && DICCP->FpINTrefrion == 0)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_SET);}
+
+	else if(DICCP->MpANLmaxt < 40 && DICCP->FpINTrefrion == 0)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefrimot_Pin, GPIO_PIN_RESET);}
+
+	if(DICCP->IpANLmaxt >= 45 && DICCP->FpINTrefrion == 0)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_SET);}
+
+	else if(DICCP->IpANLmaxt < 40 && DICCP->FpINTrefrion == 0)
+	{ HAL_GPIO_WritePin(GPIOC, RfSTArefriinverter_Pin, GPIO_PIN_RESET);}
+
 
 //	if(DICCP->RpSTAbrkledG != 0)
 //	{ HAL_GPIO_WritePin(GPIOA, RfSTAbrkledG_Pin, GPIO_PIN_SET); }
