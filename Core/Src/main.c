@@ -158,6 +158,7 @@ int main(void)
 	                Inverter_Request_Data(&hfdcan1, 0x4A, 100); HAL_Delay(5);
 	                Inverter_Request_Data(&hfdcan1, 0x49, 100); HAL_Delay(5);
 	                Inverter_Request_Data(&hfdcan1, 0x8F, 200); HAL_Delay(5);
+	                Inverter_Request_Data(&hfdcan1, 0x30, 100); HAL_Delay(5);
 
 	                LastConfigRetryTime = HAL_GetTick();
 	            }
